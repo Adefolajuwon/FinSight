@@ -1,4 +1,4 @@
-import Scraper from '../services/scraper.js';
+import Scraper from '../services/scraper.service.js';
 import { HttpContext } from '@adonisjs/core/http'
 
 
@@ -9,7 +9,7 @@ export default class ScrapePage {
     this.scraper = new Scraper();
   }
 
-  public async pageData({ request, response }: HttpContextContract) {
+  public async pageData({ request, response }: HttpContext) {
     try {
       const url = request.input('url');
       if (!url) {
