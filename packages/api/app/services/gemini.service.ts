@@ -1,5 +1,4 @@
 import {
-    FunctionDeclarationSchemaType,
     GoogleGenerativeAI,
     type FunctionCall,
     type GenerateContentResult,

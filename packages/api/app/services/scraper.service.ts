@@ -31,10 +31,12 @@ export default class Scraper {
     }
 
     const page = await this.getPage()
+    const title = await page.title()
 
     try {
       await page.goto(url, { waitUntil: 'domcontentloaded' })
-      console.log(`Page Title: ${await page.title()}`)
+      console.log(`Page Title: ${title}`)
+      return title
     } catch (error) {
       console.error('Error scraping page:', error)
     } finally {
