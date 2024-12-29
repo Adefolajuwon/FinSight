@@ -8,7 +8,7 @@
 */
 
 import router from '@adonisjs/core/services/router'
-const ScraperController = () => import('#controllers/scraper.controller')
+const DataControllerController = () => import('#controllers/scraper.controller')
 const AgentController = () => import('#controllers/agent.controller')
 router.get('/', async () => {
   return {
@@ -16,5 +16,4 @@ router.get('/', async () => {
   }
 })
 
-router.post('/page', [ScraperController, 'pageData'])
-router.post('/test', [AgentController, 'TestGemini'])
+router.get('/test', [DataControllerController, 'StockData'])

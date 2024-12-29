@@ -1,7 +1,10 @@
 import puppeteer, { Browser, Page } from 'puppeteer'
+import yahooFinance from 'yahoo-finance2';
 
-export default class Scraper {
+
+export default class DataIngestion {
   private browser: Browser | null = null
+
 
   // Initialize the browser
   async initBrowser(headless: boolean = true): Promise<void> {
@@ -25,7 +28,7 @@ export default class Scraper {
   }
 
   // Navigate to a URL and log the page title
-  async scrapePage(url: string): Promise<void> {
+  async scrapePage(url: string) {
     if (!this.browser) {
       throw new Error('Browser not initialized. Call initBrowser() first.')
     }
@@ -43,4 +46,30 @@ export default class Scraper {
       await page.close() // Ensure the page is closed even if an error occurs
     }
   }
+  async fetchTickerData(ticker = "AAPL") {
+    try {
+        const stockData = await yahooFinance.quoteSummary(ticker, {
+              modules: [
+              'price', 
+              'summaryDetail', 
+              'financialData', 
+              'defaultKeyStatistics', 
+              'incomeStatementHistory', 
+              'balanceSheetHistory', 
+              'cashflowStatementHistory', 
+              'recommendationTrend', 
+              'earnings', 
+              // 'majorHolders', 
+              'institutionOwnership'
+          ],
+        });
+
+        console.log(`Data for ${ticker}:`, stockData);
+        return stockData;
+    } catch (error) {
+        console.error(`Error fetching data for ${ticker}:`, error);
+        throw error; // Propagate error to calling function if needed
+    }
+}
+ 
 }

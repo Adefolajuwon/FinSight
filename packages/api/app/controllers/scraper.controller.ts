@@ -1,12 +1,13 @@
-import Scraper from '../services/scraper.service.js';
+import DataIngestion from '../services/Data.service.js';
 import { HttpContext } from '@adonisjs/core/http'
 
 
-export default class ScrapePage {
-  private scraper: Scraper;
+
+export default class DataController {
+  private scraper: DataIngestion;
 
   constructor() {
-    this.scraper = new Scraper();
+    this.scraper = new DataIngestion();
   }
 
   public async pageData({ request, response }: HttpContext) {
@@ -32,6 +33,15 @@ export default class ScrapePage {
         message: 'Failed to scrape the page',
         error: error.message,
       });
+    }
+  }
+  public async StockData(){
+    try {
+      const stock = await this.scraper.fetchTickerData()
+      console.log(stock)
+      return {stock}
+    } catch (error) {
+      console.log(error)
     }
   }
 }

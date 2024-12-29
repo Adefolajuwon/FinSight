@@ -60,7 +60,8 @@
     "luxon": "^3.5.0",
     "pg": "^8.13.1",
     "puppeteer": "^23.11.1",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "yahoo-finance2": "^2.13.3"
   },
   "hotHook": {
     "boundaries": [
