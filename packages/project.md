@@ -5,7 +5,7 @@
 **Mission**: Empowering investors and financial institutions with cutting-edge AI tools to transform unstructured data into actionable insights in real-time.
 
 ### **Project Overview**:
-FinSight AI is an AI-powered financial research assistant that helps institutional investors, portfolio managers, and analysts glean insights from diverse data sources. By leveraging AI technologies, it simplifies decision-making, enhances research accuracy, and reduces time spent on manual data processing.
+FinSight AI is an AI-powered financial research assistant that helps institutional investors, portfolio managers, and analysts glean insights from diverse data sources. By leveraging AI technologies, it simplifies decision-making, enhances research accuracy, and reduces time spent on manual data processing
 
 ---
 
