@@ -22,10 +22,8 @@ export default class Data{
                 return { ticker, data: stockData };
             });
     
-            // Wait for all promises to resolve
             const allStockData = await Promise.all(stockDataPromises);
     
-            // Log each ticker's data
             allStockData.forEach(({ ticker, data }) => {
                 console.log(`Data for ${ticker}:`, data);
             });
