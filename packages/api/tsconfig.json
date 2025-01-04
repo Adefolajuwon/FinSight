@@ -2,6 +2,17 @@
   "extends": "@adonisjs/tsconfig/tsconfig.app.json",
   "compilerOptions": {
     "rootDir": "./",
-    "outDir": "./build"
+    "outDir": "./build",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node16", // Modern resolution
+    "paths": {
+      "#start/*": ["./start/*"],
+      "#config/*": ["./config/*"],
+      "#services/*": ["./app/services/*"]
+    },
+    "lib": ["ES2020", "DOM"],
+    "esModuleInterop": true,
+    "skipLibCheck": true
   }
 }
