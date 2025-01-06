@@ -10,7 +10,7 @@ export default class GeminiService {
   constructor(){
     this.Gemini = new GoogleGenerativeAI(env.GEMINI_API_KEY)
   }
-  public async Testing (prompt: string) {
+  public async Generate (prompt: string) {
     const model = this.Gemini.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
     const response = result.response.text()
