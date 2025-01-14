@@ -46,30 +46,44 @@ export default class DataIngestion {
       await page.close() // Ensure the page is closed even if an error occurs
     }
   }
-  async fetchTickerData(ticker = "AAPL") {
-    try {
-        const stockData = await yahooFinance.quoteSummary(ticker, {
-              modules: [
-              'price', 
-              'summaryDetail', 
-              'financialData', 
-              'defaultKeyStatistics', 
-              'incomeStatementHistory', 
-              'balanceSheetHistory', 
-              'cashflowStatementHistory', 
-              'recommendationTrend', 
-              'earnings', 
-              // 'majorHolders', 
-              'institutionOwnership'
-          ],
-        });
+  // async  fetchTickerData(ticker ="AAPL") {
+  //   try {
+  //     const result = await yahooFinance.quoteSummary(ticker, { modules: ['price', 'summaryDetail'] });
+  //     console.log(result);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+  async fetchTickerData(ticker = "AAPL", modules = [
+    'price', 
+    'summaryDetail', 
+    'financialData', 
+    'defaultKeyStatistics', 
+    'incomeStatementHistory', 
+    'balanceSheetHistory', 
+    'cashflowStatementHistory', 
+    'recommendationTrend', 
+    'earnings',
+    'institutionOwnership'
+]) {
+    if (!ticker || typeof ticker !== "string") {
+        throw new Error("Invalid ticker provided");
+    }
 
-        console.log(`Data for ${ticker}:`, stockData);
+    try {
+        const stockData = await yahooFinance.quoteSummary(ticker, { modules });
+        console.log(`Successfully fetched data for ${ticker}`);
         return stockData;
     } catch (error) {
-        console.error(`Error fetching data for ${ticker}:`, error);
-        throw error; // Propagate error to calling function if needed
+        if (error.response) {
+            console.error(`API error for ${ticker}:`, error.response.data);
+        } else if (error.request) {
+            console.error(`Network error fetching data for ${ticker}`);
+        } else {
+            console.error(`Unexpected error fetching data for ${ticker}:`, error.message);
+        }
+        throw error; // Propagate the error for higher-level handling
     }
 }
- 
+
 }
