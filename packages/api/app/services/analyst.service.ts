@@ -39,45 +39,25 @@ export default class Analyst {
         return;
     }
 
-    // Create the stock_data table if it doesn't already exist
-    const createStockDataTableQuery = `
-        CREATE TABLE IF NOT EXISTS stock_data (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ticker TEXT NOT NULL,
-            company_name TEXT,
-            news_sentiment TEXT
-        );
-    `;
+    const createStockDataTableQuery= `
+    CREATE TABLE IF NOT EXISTS unified_data (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ticker TEXT NOT NULL,
+        company_name TEXT,            -- Only for stock data
+        news_sentiment TEXT,          -- Only for stock data
+        period_type TEXT,             -- 'yearly' or 'quarterly' for financial data
+        period TEXT,                  -- 'year' for yearly or 'quarter' for quarterly
+        revenue BIGINT,               -- Nullable for stock data rows
+        earnings BIGINT,              -- Nullable for stock data rows
+        UNIQUE (ticker, period_type, period)  -- Ensures no duplicate entries for the same period and ticker
+    );
+`;
 
-    // Create the financials_yearly table if it doesn't already exist
-    const createFinancialsYearlyTableQuery = `
-        CREATE TABLE IF NOT EXISTS financials_yearly (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ticker TEXT NOT NULL,
-            year INTEGER NOT NULL,
-            revenue BIGINT NOT NULL,
-            earnings BIGINT NOT NULL,
-            UNIQUE (ticker, year)  -- Ensure no duplicate entries for the same year and ticker
-        );
-    `;
-
-    // Create the financials_quarterly table if it doesn't already exist
-    const createFinancialsQuarterlyTableQuery = `
-        CREATE TABLE IF NOT EXISTS financials_quarterly (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ticker TEXT NOT NULL,
-            quarter TEXT NOT NULL,
-            revenue BIGINT NOT NULL,
-            earnings BIGINT NOT NULL,
-            UNIQUE (ticker, quarter)  -- Ensure no duplicate entries for the same quarter and ticker
-        );
-    `;
 
     // Run the queries to create the tables
     await this.db.run(createStockDataTableQuery);
-    await this.db.run(createFinancialsYearlyTableQuery);
-    await this.db.run(createFinancialsQuarterlyTableQuery);
 
     console.log("Tables created or already exist.");
 }
+
 }
