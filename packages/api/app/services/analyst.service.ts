@@ -1,9 +1,11 @@
 import GeminiService from "./gemini.service.js";
-import * as sqlite3 from "sqlite3";
+import sqlite3 from "sqlite3";
 import { open, Database } from "sqlite";
 
+// Ensure sqlite3 has verbose mode enabled
+sqlite3.verbose();
 
-export default class Analyst {
+export default class Analyst{
     private geminiService: GeminiService;
     ticker: string;
     companyName?: string; 
@@ -16,7 +18,7 @@ export default class Analyst {
     public async initializeDB(dbPath: string = "stock.db"): Promise<void> {
         this.db = await open({
             filename: dbPath,
-            driver: sqlite3.Database, // Ensure this correctly references sqlite3
+            driver: sqlite3.Database, 
         });
     
         console.log("Database connection established.");
@@ -25,22 +27,25 @@ export default class Analyst {
     
     
     public async _getCompetitors(): Promise<string[]> {
-        this.ticker = "AOS";
-        this.companyName = "A. O. Smith";
+      this.companyName = "A.O SMITH"
       
-        const prompt = `Given the company name "${this.companyName}" and ticker "${this.ticker}", identify the top three competitors to the company. Return the result as a JSON array of ticker symbols.`;
-      
-        try {
-          const result = await this.geminiService.Generate(prompt); // result is likely a JSON string
-      
-          // Attempt to parse the response as JSON
-          const competitors = JSON.parse(result);
-      
-          if (Array.isArray(competitors) && competitors.every((item) => typeof item === "string")) {
+        const prompt = `Given the company name A.O SMITH and ticker "${this.ticker}", identify the top three competitors to the company. Return the result as a JSON array of ticker symbols.`;
+       console.log(prompt)
+       try {
+        const result = await this.geminiService.Generate(prompt);
+        
+        // Sanitize the response: Remove backticks and trim whitespace
+        const cleanedResult = result.replace(/```json|```/g, "").trim();
+        
+        // Attempt to parse the cleaned response as JSON
+        const competitors = JSON.parse(cleanedResult);
+        console.log(competitors);
+    
+        if (Array.isArray(competitors) && competitors.every((item) => typeof item === "string")) {
             return competitors;
-          } else {
-            throw new Error("Invalid response format: Expected a JSON array of strings.");
-          }
+        } else {
+            throw new Error("Invalid response format: Expected an array of strings");
+        }
         } catch (error) {
           console.error("Error fetching competitors:", error);
           throw new Error("Failed to fetch competitors.");
@@ -59,12 +64,9 @@ export default class Analyst {
         ticker TEXT NOT NULL,
         company_name TEXT,            -- Only for stock data
         news_sentiment TEXT,          -- Only for stock data
-        period_type TEXT,             -- 'yearly' or 'quarterly' for financial data
-        period TEXT,                  -- 'year' for yearly or 'quarter' for quarterly
         revenue BIGINT,               -- Nullable for stock data rows
         earnings BIGINT,              -- Nullable for stock data rows
-        UNIQUE (ticker, period_type, period)  -- Ensures no duplicate entries for the same period and ticker
-        competitors TEXT,
+        competitors TEXT
     );
 `;
 
@@ -76,12 +78,3 @@ export default class Analyst {
 }
 
 }
-(async () => {
-    const analyst = new Analyst("AOS"); // Create an instance with a ticker
-    try {
-        const competitors = await analyst._getCompetitors();
-        console.log("Competitors:", competitors);
-    } catch (error) {
-        console.error("Error:", error);
-    }
-})();
