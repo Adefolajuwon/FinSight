@@ -9,7 +9,7 @@ export default class Analyst{
     private geminiService: GeminiService;
     ticker: string;
     companyName?: string; 
-    private db: Database | null = null; // Adjusted to Database from sqlite package
+    private db: Database | null = null; 
 
     constructor(ticker: string) {
         this.ticker = ticker;
@@ -20,14 +20,14 @@ export default class Analyst{
             filename: dbPath,
             driver: sqlite3.Database, 
         });
-    
+             
         console.log("Database connection established.");
         await this._createTable();
     }
     
     
-    public async _getCompetitors(): Promise<string[]> {
-      this.companyName = "A.O SMITH"
+    public async _getCompetitors(tinker: string, companyName: string): Promise<string[]> {
+        this.companyName = "A.O SMITH"
       
         const prompt = `Given the company name A.O SMITH and ticker "${this.ticker}", identify the top three competitors to the company. Return the result as a JSON array of ticker symbols.`;
        console.log(prompt)
