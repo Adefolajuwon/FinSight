@@ -4,11 +4,13 @@ import fs from 'fs/promises';
 export default class TickerScraper {
     private url: string;
 
+
     constructor(url: string) {
         this.url = url;
     }
 
-    async fetchTickers(): Promise<{ [key: string]: string }> {
+   public async fetchTickers(): Promise<{ [key: string]: string }> {
+        this.url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         console.log("[Scraping ticker data from Wikipedia]");
         let browser;
         try {
@@ -45,6 +47,7 @@ export default class TickerScraper {
         }
     }
     
+
 
     async getTickersAndSave(): Promise<void> {
         const tickers = await this.fetchTickers();

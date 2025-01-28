@@ -1,6 +1,7 @@
 import GeminiService from "./gemini.service.js";
 import sqlite3 from "sqlite3";
 import { open, Database } from "sqlite";
+import TickerScraper from "./tickers.service.js";
 
 // Ensure sqlite3 has verbose mode enabled
 sqlite3.verbose();
@@ -9,10 +10,12 @@ export default class Analyst{
     private geminiService: GeminiService;
     ticker: string;
     companyName?: string; 
+    tinkerObject?: object;
     private db: Database | null = null; 
 
     constructor(ticker: string) {
         this.ticker = ticker;
+        this.companyName = this.companyName
         this.geminiService = new GeminiService(); 
     }
     public async initializeDB(dbPath: string = "stock.db"): Promise<void> {
@@ -77,4 +80,18 @@ export default class Analyst{
     console.log("Tables created or already exist.");
 }
 
+}
+
+
+function getTickers(){
+    const scraper  = new TickerScraper( "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
+    const tickerObject = scraper.fetchTickers()
+    return tickerObject
+
+}
+function analyzeTinkers() {
+    const companies: Record<string, string> = {
+        getTickers()
+    }
+        
 }
