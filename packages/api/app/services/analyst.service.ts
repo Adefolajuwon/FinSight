@@ -2,20 +2,23 @@ import GeminiService from './gemini.service.js';
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import TickerScraper from './tickers.service.js';
+import DataIngestion from './scraper.service.js';
 
 // Ensure sqlite3 has verbose mode enabled
 sqlite3.verbose();
 
 export default class Analyzer {
     private geminiService: GeminiService;
+    private dataService: DataIngestion;
     ticker: string;
-    companyName?: string;
+    companyName: string;
     tinkerObject?: object;
     private db: Database | null = null;
 
     constructor(companyName: string, ticker: string) {
+        this.dataService = new DataIngestion();
         this.ticker = ticker;
-        this.companyName = this.companyName;
+        this.companyName = companyName;
         this.geminiService = new GeminiService();
     }
     public async initializeDB(dbPath: string = 'stock.db'): Promise<void> {
@@ -53,7 +56,7 @@ export default class Analyzer {
     }
     private async fetchData() {
         const tasks = {
-            competitors: this._getCompetitorsgetCompetitors(),
+            competitors: this._getCompetitors(this.ticker, this.companyName),
             stock_data: getStockData(),
             company_info: getCompanyInfo(),
             financial_statements: getFinancialStatements(),
