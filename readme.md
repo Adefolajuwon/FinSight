@@ -121,23 +121,4 @@ This solution allows professionals to focus on high-value tasks like strategy an
 - Retail investors gaining insights from unstructured data.
 - Private market investors processing pitch decks, term sheets, and data rooms.
 
----
-
-### **Technical Stack**:
-1. **Vector Database**: Pinecone, Weaviate, or Milvus for semantic search.
-2. **LLMs**: OpenAI’s GPT, Anthropic’s Claude, or similar.
-3. **Pipelines**: Prefect, Apache Airflow, or custom orchestration frameworks.
-4. **Web Scraping**: Scrapy, Puppeteer, or Beautiful Soup, enhanced with AI tools like Diffbot or Parsio.
-5. **Frontend**: React.js or Vue.js for dashboards.
-6. **Backend**: FastAPI or Flask for API integrations.
-7. **Cloud**: AWS/GCP/Azure for scalable deployment.
-
----
-
-### **Revenue Model**:
-- **Subscription-based SaaS**: Offer tiered pricing for individuals, SMEs, and enterprises.
-- **Custom Integrations**: Upsell bespoke features to large institutions.
-- **API Access**: Charge for API usage based on data volume and complexity.
-
----
 
