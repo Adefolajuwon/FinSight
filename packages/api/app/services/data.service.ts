@@ -31,13 +31,13 @@ interface QuarterlyEarningsDTO {
 }
 
 export default class DataIngestion {
-    async fetchTickerData(ticker: string) {
+    async fetchTickerData(ticker: string): Promise<CompanyFinancialDTO> {
         if (!ticker || typeof ticker !== 'string') {
             throw new Error('Invalid ticker provided');
         }
-
+    
         try {
-            const stockData = await yahooFinance.quoteSummary(ticker, {
+            const response = await yahooFinance.quoteSummary(ticker, {
                 modules: [
                     'price',
                     'summaryDetail',
@@ -51,20 +51,47 @@ export default class DataIngestion {
                     'institutionOwnership',
                 ],
             });
+            const stockData = response.stock; // Access the nested 'stock' object
             console.log(`Successfully fetched data for ${ticker}`);
-            return stockData;
-        } catch (error) {
-            if (error.response) {
-                console.error(`API error for ${ticker}:`, error.response.data);
+    
+            // Extracting relevant data from the stockData
+            const financialData = stockData.financialData || {};
+            const summaryDetail = stockData.summaryDetail || {};
+            const earningsHistory = stockData.earnings?.financialsChart?.quarterly || [];
+    
+            // Mapping data to the CompanyFinancialDTO
+            const companyData: CompanyFinancialDTO = {
+                companyName: stockData.price?.longName || '',
+                tickerSymbol: ticker,
+                marketCap: summaryDetail?.marketCap || 0,
+                industry: stockData.price?.industry || '',
+                quickRatio: financialData?.quickRatio || 0,
+                currentRatio: financialData?.currentRatio || 0,
+                totalRevenue: financialData?.totalRevenue || 0,
+                debtToEquity: financialData?.debtToEquity || 0,
+                grossProfits: financialData?.grossProfits || 0,
+                earningsGrowth: financialData?.earningsGrowth || 0,
+                revenueGrowth: financialData?.revenueGrowth || 0,
+                totalDebt: financialData?.totalDebt?.toString() || '',
+                peRatio: summaryDetail?.peRatio || null,
+                dividendYield: summaryDetail?.dividendYield || null,
+                earningsHistory: earningsHistory.map((earn: any) => ({
+                    date: earn.date || '',
+                    revenue: earn.revenue || 0,
+                    earnings: earn.earnings || 0,
+                })),
+            };
+    
+            return companyData;
+        } catch (error: any) {
+            if (axios.isAxiosError(error)) {
+                console.error(`API error for ${ticker}:`, error.response?.data);
             } else if (error.request) {
                 console.error(`Network error fetching data for ${ticker}`);
             } else {
-                console.error(
-                    `Unexpected error fetching data for ${ticker}:`,
-                    error.message,
-                );
+                console.error(`Unexpected error fetching data for ${ticker}:`, error.message);
             }
-            throw error; // Propagate the error for higher-level handling
+            throw error;
         }
     }
     public async fetchNews(companyName: string): Promise<any[] | null> {
@@ -72,8 +99,7 @@ export default class DataIngestion {
         const startDate = new Date();
         startDate.setDate(endDate.getDate() - 3);
 
-        const url = `https://newsapi.org/v2/everything?q=${companyName}&from=${startDate.toISOString().split('T')[0]}&to=${endDate.toISOString().split('T')[0]}&sortBy=popularity&apiKey=${config.NEWS_API_KEY}`;
-
+        const url = `https://newsapi.org/v2/everything?q=${companyName}&from=${startDate.toISOString().split('T')[0]}&to=${endDate.toISOString().split('T')[0]}&sortBy=popularity&apiKey=${env.NEWS_API_KEY}`;
         try {
             const response = await axios.get(url);
             if (response.status === 200) {
